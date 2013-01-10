@@ -1,0 +1,150 @@
+<head>
+<style>
+#window{
+	margin:auto;
+	width:600px;
+	height:600px;
+	border:1px solid red;
+	/* overflow:hidden; */
+	position:relative;
+}
+ul{	list-style: none outside none;}
+ul img{ width:100px; height: 100px;}
+
+#board{
+	position:absolute;
+	
+	 -webkit-transition: all 1s linear; 
+	 -moz-transition: all 1s linear; 
+	 -o-transition: all 1s linear; 
+	 -ms-transition: all 1s linear; 
+	 transition: all 1s linear;
+	 
+}
+#board td .tile{
+	 width:100px; 
+	 height:100px;
+	 border:1px solid black;
+}
+#board td .tile img{
+	 width:100px; 
+	 height:100px;
+}
+
+#border-left{
+	position:absolute;
+	left:0px;
+	top:0px;
+	border:1px solid blue;
+	width : 100px;
+	height : 600px;
+}
+#border-left:hover{
+	border:2px solid blue;
+}
+</style>
+</head>
+<body>
+<div id="dock_tile">
+	<ul>
+		<li draggable="true"><img src="images/tile1.jpg"></li>
+		<li draggable="true"><img src="images/tile2.jpg"></li>
+		<li draggable="true"><img src="images/tile3.jpg"></li>
+	</ul>
+
+</div>
+<div id="window">
+	<table id="board">
+	</table>
+	<div id="border-left"></div>
+	<div id="border-right"></div>
+</div>
+
+
+</body>
+<script>
+	var rows = 9;
+	var columns = 9;
+	var board =document.getElementById('board');	
+	var crop_window =document.getElementById('window');	
+	for(var i = 0; i<rows; i++){
+			var row = document.createElement('tr');
+		for(var j = 0; j<columns; j++){
+			var column = document.createElement('td');
+			var innerDiv = document.createElement('div');
+			innerDiv.className= 'tile';
+			
+			column.appendChild(innerDiv);
+			row.appendChild(column);
+		}
+		board.appendChild(row);
+	}
+	
+	
+	board.style.left = (crop_window.offsetWidth - board.offsetWidth )/2;
+	board.style.top = (crop_window.offsetHeight - board.offsetHeight )/2;
+	
+	
+	
+	function handleDragStart(e) {
+		this.style.opacity = '0.8';  // this / e.target is the source node.
+		e.dataTransfer.setData('text/html', this.innerHTML);
+		
+	}
+	
+	function handleDragOver(e) {
+		if (e.preventDefault) {
+			e.preventDefault(); // Necessary. Allows us to drop.
+		}
+
+		e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+		return false;
+	}
+	
+	function handleDrop(e) {
+		if (e.preventDefault) {
+			e.preventDefault(); // Necessary. Allows us to drop.
+		}
+		
+	  // this / e.target is current target element.
+	  if (e.stopPropagation) {
+		e.stopPropagation(); // stops the browser from redirecting.
+	  }
+
+	this.innerHTML = e.dataTransfer.getData('text/html');
+
+	  return false;
+	}
+
+
+	var cols = document.querySelectorAll('#dock_tile ul li');
+	[].forEach.call(cols, function(col) {
+		col.addEventListener('dragstart', handleDragStart, false);
+	});
+	var cols = document.querySelectorAll('#board .tile');
+	[].forEach.call(cols, function(col) {
+		col.addEventListener('dragover', handleDragOver, false);
+		col.addEventListener('drop', handleDrop, false);
+	});
+
+	var borderLeft = document.getElementById('border-left');
+	var intervalId;
+	borderLeft.addEventListener('mouseover',function(){
+		intervalId =
+			setInterval(function(){
+				var newPosition = parseInt(board.style.left.split("p")[0]) + 100;
+				console.log(newPosition);
+				if(newPosition >= 0){
+					newPosition  = 0;
+					clearInterval(intervalId);
+				}
+				board.style.left = newPosition.toString()+'px'  ;
+			},1000 
+			);
+		});
+	borderLeft.addEventListener('mouseout',function(){
+		clearInterval(intervalId);
+	});
+	
+</script>
