@@ -16,8 +16,8 @@ function createGrid() {
         board.appendChild(row);
     }
 
-    board.style.left = (crop_window.offsetWidth - board.offsetWidth) / 2;
-    board.style.top = (crop_window.offsetHeight - board.offsetHeight) / 2;
+    board.style.left = ((crop_window.offsetWidth - board.offsetWidth) / 2).toString() + 'px';
+    board.style.top = ((crop_window.offsetHeight - board.offsetHeight) / 2).toString() + 'px';
 };
 
 function addDrag() {
@@ -63,28 +63,56 @@ function addDrop() {
 
 };
 
-function addScroll() {
+function addScrollLeft() {
     var borderLeft = document.getElementById('border-left');
     var intervalId;
+    var speed = 100;
+
     borderLeft.addEventListener('mouseover', function() {
-        intervalId = setInterval(function() {
-            var newPosition = parseInt(board.style.left.split("p")[0]) + 100;
-            console.log(newPosition);
+        var moveLeft = function() {
+            var newPosition = parseInt(board.style.left.match(/^(.*)px$/)[1]) + speed;
             if(newPosition >= 0) {
                 newPosition = 0;
                 clearInterval(intervalId);
             }
             board.style.left = newPosition.toString() + 'px';
-        }, 1000);
+        };
+
+        intervalId = setInterval(moveLeft, 1000);
     });
 
     borderLeft.addEventListener('mouseout', function() {
         clearInterval(intervalId);
     });
-}
+};
+
+function addScrollRight() {
+    var borderRight = document.getElementById('border-right');
+    var intervalId;
+    var speed = 100;
+
+    borderRight.addEventListener('mouseover', function() {
+        var moveRight = function() {
+            var newPosition = parseInt(board.style.left.match(/^(.*)px$/)[1]) - speed;
+            console.log(newPosition)
+            if(newPosition < -350) {
+                newPosition = -350;
+                clearInterval(intervalId);
+            }
+            board.style.left = newPosition.toString() + 'px';
+        };
+
+        intervalId = setInterval(moveRight, 1000);
+    });
+
+    borderRight.addEventListener('mouseout', function() {
+        clearInterval(intervalId);
+    });
+};
 
 
 createGrid();
 addDrag();
 addDrop();
-addScroll();
+addScrollLeft();
+addScrollRight();
