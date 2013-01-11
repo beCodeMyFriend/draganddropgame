@@ -18,6 +18,8 @@ function createGrid() {
 
     board.style.left = ((crop_window.offsetWidth - board.offsetWidth) / 2).toString() + 'px';
     board.style.top = ((crop_window.offsetHeight - board.offsetHeight) / 2).toString() + 'px';
+
+    console.log((crop_window.offsetHeight - board.offsetHeight))
 };
 
 function addDrag() {
@@ -64,75 +66,57 @@ function addDrop() {
 };
 
 function addScrollLeft() {
-    var borderLeft = document.getElementById('border-left');
-    var intervalId;
-    var speed = 100;
-
-    borderLeft.addEventListener('mouseover', function() {
-        var moveLeft = function() {
-            var newPosition = parseInt(board.style.left.match(/^(.*)px$/)[1]) + speed;
-            if(newPosition >= 0) {
-                newPosition = 0;
-                clearInterval(intervalId);
-            }
-            board.style.left = newPosition.toString() + 'px';
-        };
-
-        intervalId = setInterval(moveLeft, 1000);
-    });
-
-    borderLeft.addEventListener('mouseout', function() {
-        clearInterval(intervalId);
-    });
+    addScroll('scroll-left', 'left', 1);
 };
 
 function addScrollRight() {
-    var borderRight = document.getElementById('border-right');
-    var intervalId;
-    var speed = 100;
-
-    borderRight.addEventListener('mouseover', function() {
-        var moveRight = function() {
-            var newPosition = parseInt(board.style.left.match(/^(.*)px$/)[1]) - speed;
-            if(newPosition < -350) {
-                newPosition = -350;
-                clearInterval(intervalId);
-            }
-            board.style.left = newPosition.toString() + 'px';
-        };
-
-        intervalId = setInterval(moveRight, 1000);
-    });
-
-    borderRight.addEventListener('mouseout', function() {
-        clearInterval(intervalId);
-    });
+    addScroll('scroll-right', 'left', -1);
 };
 
 function addScrollUp() {
-    var borderUp = document.getElementById('border-top');
+    addScroll('scroll-top', 'top', 1);
+};
+
+function addScrollDown() {
+    addScroll('scroll-bottom', 'top', -1);
+};
+
+function addScroll(elementId, property, direction) {
+    var scroll = document.getElementById(elementId);
     var intervalId;
     var speed = 100;
+    var board = document.getElementById('board');
+    var crop_window = document.getElementById('window');
 
-    borderUp.addEventListener('mouseover', function() {
-        var moveUp = function() {
-            var newPosition = parseInt(board.style.top.match(/^(.*)px$/)[1]) + speed;
-            if(newPosition > 0) {
-                newPosition = 0;
+    var limit = 0;
+    if(direction < 0){
+        limit = crop_window.offsetHeight - board.offsetHeight;
+    }
+
+    scroll.addEventListener('mouseover', function() {
+        var move = function() {
+            var position = parseInt(board.style[property].match(/^(.*)px$/)[1]);
+            var newPosition = position + (speed * direction);
+
+            if(direction > 0 && newPosition > limit ){
+                newPosition = limit;
                 clearInterval(intervalId);
             }
-            board.style.top = newPosition.toString() + 'px';
+
+            if(direction < 0 && newPosition < limit ) {
+                newPosition = limit;
+                clearInterval(intervalId);
+            }
+            board.style[property] = newPosition.toString() + 'px';
         };
 
-        intervalId = setInterval(moveUp, 1000);
+        intervalId = setInterval(move, 1000);
     });
 
-    borderUp.addEventListener('mouseout', function() {
+    scroll.addEventListener('mouseout', function() {
         clearInterval(intervalId);
     });
 };
-
-
 
 createGrid();
 addDrag();
@@ -140,3 +124,4 @@ addDrop();
 addScrollLeft();
 addScrollRight();
 addScrollUp();
+addScrollDown();
