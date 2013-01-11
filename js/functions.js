@@ -18,8 +18,6 @@ function createGrid() {
 
     board.style.left = ((crop_window.offsetWidth - board.offsetWidth) / 2).toString() + 'px';
     board.style.top = ((crop_window.offsetHeight - board.offsetHeight) / 2).toString() + 'px';
-
-    console.log((crop_window.offsetHeight - board.offsetHeight))
 };
 
 function addDrag() {
@@ -65,19 +63,10 @@ function addDrop() {
 
 };
 
-function addScrollLeft() {
+function addScrolls() {
     addScroll('scroll-left', 'left', 1);
-};
-
-function addScrollRight() {
     addScroll('scroll-right', 'left', -1);
-};
-
-function addScrollUp() {
     addScroll('scroll-top', 'top', 1);
-};
-
-function addScrollDown() {
     addScroll('scroll-bottom', 'top', -1);
 };
 
@@ -121,7 +110,4 @@ function addScroll(elementId, property, direction) {
 createGrid();
 addDrag();
 addDrop();
-addScrollLeft();
-addScrollRight();
-addScrollUp();
-addScrollDown();
+addScrolls();
