@@ -94,7 +94,6 @@ function addScrollRight() {
     borderRight.addEventListener('mouseover', function() {
         var moveRight = function() {
             var newPosition = parseInt(board.style.left.match(/^(.*)px$/)[1]) - speed;
-            console.log(newPosition)
             if(newPosition < -350) {
                 newPosition = -350;
                 clearInterval(intervalId);
@@ -110,9 +109,34 @@ function addScrollRight() {
     });
 };
 
+function addScrollUp() {
+    var borderUp = document.getElementById('border-top');
+    var intervalId;
+    var speed = 100;
+
+    borderUp.addEventListener('mouseover', function() {
+        var moveUp = function() {
+            var newPosition = parseInt(board.style.top.match(/^(.*)px$/)[1]) + speed;
+            if(newPosition > 0) {
+                newPosition = 0;
+                clearInterval(intervalId);
+            }
+            board.style.top = newPosition.toString() + 'px';
+        };
+
+        intervalId = setInterval(moveUp, 1000);
+    });
+
+    borderUp.addEventListener('mouseout', function() {
+        clearInterval(intervalId);
+    });
+};
+
+
 
 createGrid();
 addDrag();
 addDrop();
 addScrollLeft();
 addScrollRight();
+addScrollUp();
